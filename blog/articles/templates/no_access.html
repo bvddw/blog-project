@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  NO ACCESS
+{% endblock %}
+
+{% block content %}
+  <div style="text-align: center">
+    <h1 style="padding-left: 16px; color: red">You are not the article author.</h1>
+    <a style="color: black" href="{% url 'main_page' %}">Back to main page</a>
+  </div>
+
+{% endblock %}

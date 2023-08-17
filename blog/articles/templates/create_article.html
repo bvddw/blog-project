@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  CREATE
+{% endblock %}
+
+{% block content %}
+<main class="container">
+  <div class="row">
+    <section class="col-md-9" role="main">
+      <div class="h4 fst-italic">Article Form</div>
+      <form id="articleForm" class="has-validation">
+        <div>
+          <label for="title" class="form-label">Title</label>
+          <input type="text" name="title" id="title" class="form-control">
+        </div>
+        <div>
+          <label for="category" class="form-label">Category</label>
+          <select name="category" id="category" class="form-select" data-live-search="true" multiple="">
+            {% for cur_topic in topics_list %}
+              <option value={{cur_topic.option_value}}>{{ cur_topic.topic.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label for="content" class="form-label">Content</label>
+          <textarea name="content" id="content" class="form-control"></textarea>
+        </div>
+      </form>
+      <button class="btn btn-success" style="margin-top: 12px">create</button>
+    </section>
+  </div>
+</main>
+{% endblock %}

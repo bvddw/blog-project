@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  MAINPAGE
+{% endblock %}
+
+{% load article_tag %}
+
+{% block content %}
+  {% show_articles request.user %}
+{% endblock %}

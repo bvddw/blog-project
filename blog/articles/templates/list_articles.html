@@ -1,0 +1,13 @@
+{% for article in articles %}
+  <div style="margin-bottom: 5px; border-width: 1px; border-color: black; padding: 10px 20px; border-radius: 12px">
+    <a style="color: black; text-decoration: underline; font-size: 20px; font-weight: bold" href="{% url 'articles:one_article' article_slug=article.slug%}">{{ article.title }}</a>
+    <div>
+      {% for topic in article.topics.all %}
+        <a href="{% url 'topics:one_topic' topic_title=topic.title %}" style="margin-right: 4px; color: rgba(0, 0, 0, 0.48); text-decoration: none">{{ topic.title }}</a>
+      {% endfor %}
+    </div>
+    <p style="color: rgba(0, 0, 0, 0.48)">Created at: <a>{{ article.created_at }}</a></p>
+    <p style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">{{ article.content }}</p>
+    <p>Comments ({{ article.number_of_comments }})</p>
+  </div>
+{% endfor %}
