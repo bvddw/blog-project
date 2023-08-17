@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  DELETE
+{% endblock %}
+
+{% block content %}
+<main class="container">
+  <div class="row">
+    <section class="col-md-9" role="main">
+      <div class="h4 fst-italic">Delete Form</div>
+      <form id="articleForm" class="has-validation">
+        <div>
+          <label for="title" class="form-label">Enter article title to delete:</label>
+          <input type="text" name="title" id="title" class="form-control">
+        </div>
+      </form>
+      <button class="btn btn-danger" style="margin-top: 12px">Delete</button>
+    </section>
+  </div>
+</main>
+{% endblock %}

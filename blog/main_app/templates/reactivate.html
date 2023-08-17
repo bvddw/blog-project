@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  REACTIVATE
+{% endblock %}
+
+{% block content %}
+<main class="form-auth form-signin w-100 m-auto" style="max-width: 300px; text-align: center">
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="h3 mb-3 fw-normal text-nowrap">Reactivate form</div>
+
+    <div class="form-floating" style="margin-bottom: 4px">
+      {{ form.email }}
+      <label for="Email">{{ form.email.label }}</label>
+      <div>{{ form.email.errors }}</div>
+    </div>
+
+    <button class="w-100 btn btn-lg btn-outline-success shadow" type="submit">Reactivate account</button>
+  </form>
+</main>
+{% endblock %}
