@@ -19,7 +19,7 @@ def get_sorted_articles(user_id):
     # take only preferred topics by current user
     preferred_topics = UserTopic.objects.filter(user=user).values_list('topic__title', flat=True)
     # take only articles, that connected to preferred topics
-    articles = Article.objects.all().annotate(number_of_topics=Count('topics', filter=Q(topics__title__in=preferred_topics))).annotate(number_of_comments=Count('comment'))
+    articles = Article.objects.all().annotate(number_of_topics=Count('topics', filter=Q(topics__title__in=preferred_topics)))
     # let's display articles in relevant order for each user. Even if user has not preferred topics, we will show
     # articles just ordered by creation time.
     articles = articles.order_by('-number_of_topics')
