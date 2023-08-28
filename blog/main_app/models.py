@@ -39,6 +39,9 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
+    def number_of_comments(self):
+        return Comment.objects.filter(article=self).count()
+
 
 class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

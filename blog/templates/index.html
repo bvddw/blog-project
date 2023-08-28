@@ -7,5 +7,7 @@
 {% load article_tag %}
 
 {% block content %}
-  {% show_articles request.user %}
+  {% for article in sorted_articles %}
+    {% display_article article %}
+  {% endfor %}
 {% endblock %}

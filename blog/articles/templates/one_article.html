@@ -24,24 +24,29 @@
       <a style="margin-left: 6px; color: black; text-decoration: none" href="{% url 'articles:del_article' article_slug=article.slug %}">Delete</a>
     </div>
 
-    {% if comments %}
-    <h2 style="text-align: left; font-style: italic">Comments</h2>
+
+    {% if comments or request.user.is_authenticated %}
+      <h2 style="text-align: left; font-style: italic">Comments</h2>
     {% endif %}
-  {% for comment in comments %}
-    <div style="margin-bottom: 12px; text-align: left">
-      <p><a style="color: black; font-weight: bold" href="{% url 'profile_page' username=comment.author.username%}">{{ comment.author }}:</a> <a style="color: rgba(0, 0, 0, 0.64)">({{ comment.created_at}})<a/></p>
-      <p>{{ comment.message }}</p>
-    </div>
-  {% endfor %}
-    <form id="articleForm" class="has-validation">
-        <div style="text-align: center">
-          <label for="comment" class="form-label" style="text-align: center">Comment form</label>
-          <div style="display: flex; align-items: center; justify-content: center">
-            <input type="text" name="comment" id="comment" class="form-control" placeholder="Your comment">
-            <button class="btn btn-success" style="margin-left: 12px">Submit</button>
-          </div>
+    {% for comment in comments %}
+      <div style="margin-bottom: 12px; text-align: left">
+        <p><a style="color: black; font-weight: bold" href="{% url 'user:profile_page' username=comment.author.username%}">{{ comment.author }}:</a> <a style="color: rgba(0, 0, 0, 0.64)">({{ comment.created_at}})<a/></p>
+        <p>{{ comment.message }}</p>
+      </div>
+    {% endfor %}
+    {% if request.user.is_authenticated %}
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="form-floating" style="margin-bottom: 4px">
+          {{ form.message }}
+          <label for="message">{{ form.message.label }}</label>
+          <div>{{ form.title.errors }}</div>
         </div>
+        <div>{{ form.title.errors }}</div>
+        <button class="w-100 btn btn-lg btn-outline-dark shadow" type="submit">Create</button>
       </form>
+    {% endif %}
   </div>
 
 {% endblock %}

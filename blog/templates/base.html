@@ -55,7 +55,7 @@
     }
   </style>
 </head>
-<body>
+<body style="position: relative">
 <div class="header-block">
   <div class="header">
     <a href="{% url 'main_page' %}" class="header-logo">DJANGO PROJECT</a>
@@ -85,6 +85,31 @@
 </div>
   {% block content %}
   {% endblock %}
+  {% if page_obj.has_other_pages %}
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" href="?page=1" aria-label="Previous">
+            <span aria-hidden="true" style="color: black;">&laquo;</span>
+          </a>
+        </li>
+        {% for p in paginator.page_range %}
+          {% if page_obj.number == p %}
+            <li class="page-item"><a class="page-link" style="background-color: black; color: white" href="?page={{ p }}">{{ p }}</a></li>
+          {% else %}
+            <li class="page-item"><a class="page-link" style="color: black;" href="?page={{ p }}">{{ p }}</a></li>
+          {% endif %}
+        {% endfor %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ paginator.num_pages }}" aria-label="Next">
+            <span aria-hidden="true" style="color: black;">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  {% endif %}
+
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </html>

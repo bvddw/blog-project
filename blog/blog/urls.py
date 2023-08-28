@@ -16,15 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
-from . import views
+from .views import *
 
 app_name = 'main_app'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.main_page, name='main_page'),
-    path('about/', views.about, name='about_page'),
-    re_path(r'^archive\/(?P<year>\d{4})\/(?P<month>1[0-2]|0?[1-9])\/$', views.archive),
+    path('', MainPage.as_view(), name='main_page'),
+    path('about/', AboutPage.as_view(), name='about_page'),
+    # re_path(r'^archive\/(?P<year>\d{4})\/(?P<month>1[0-2]|0?[1-9])\/$', views.archive),
     path('', include(('main_app.urls', 'main_app'), namespace='user')),
     path('articles/', include(('articles.urls', 'articles'), namespace='articles')),
     path('topics/', include(('topics.urls', 'topics'), namespace='topics')),

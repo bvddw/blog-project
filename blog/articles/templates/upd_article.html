@@ -9,25 +9,27 @@
   <div class="row">
     <section class="col-md-9" role="main">
       <div class="h4 fst-italic">Update Form</div>
-      <form id="articleForm" class="has-validation">
-        <div>
-          <label for="title" class="form-label">Title</label>
-          <input type="text" name="title" id="title" class="form-control" value='{{article.title}}'>
+      <form method="post">
+        {% csrf_token %}
+        <div class="h3 mb-3 fw-normal text-nowrap">Please, input data:</div>
+
+        <div class="form-floating" style="margin-bottom: 4px">
+          {{ form.title }}
+          <label for="title">{{ form.title.label }}</label>
+          <div>{{ form.title.errors }}</div>
         </div>
-        <div>
-          <label for="category" class="form-label">Category</label>
-          <select name="category" id="category" class="form-select" data-live-search="true" multiple="">
-            {% for cur_topic in topics_list %}
-              <option value={{cur_topic.option_value}}>{{ cur_topic.topic.title }}</option>
-            {% endfor %}
-          </select>
+
+        <div class="form-floating" style="margin-bottom: 4px">
+          {{ form.content }}
+          <label for="content">{{ form.content.label }}</label>
         </div>
-        <div>
-          <label for="content" class="form-label">Content</label>
-          <textarea name="content" id="content" class="form-control">{{ article.content }}</textarea>
+
+        <div class="form-floating" style="margin-bottom: 4px">
+          {{ form.topics }}
         </div>
+        <button class="btn btn-lg btn-outline-dark shadow" type="submit">Update</button>
+        <a class="btn btn-lg btn-outline-primary shadow" href="{% url 'articles:one_article' article_slug=slug %}">Back</a>
       </form>
-      <button class="btn btn-success" style="margin-top: 12px">Submit</button>
     </section>
   </div>
 </main>

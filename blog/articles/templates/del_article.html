@@ -9,13 +9,18 @@
   <div class="row">
     <section class="col-md-9" role="main">
       <div class="h4 fst-italic">Delete Form</div>
-      <form id="articleForm" class="has-validation">
-        <div>
-          <label for="title" class="form-label">Enter article title to delete:</label>
-          <input type="text" name="title" id="title" class="form-control">
+      <form method="post">
+        {% csrf_token %}
+        <div class="h3 mb-3 fw-normal text-nowrap">Please, enter the title of article to confirm:</div>
+
+        <div class="form-floating" style="margin-bottom: 4px">
+          {{ form.title }}
+          <label for="title">{{ form.title.label }}</label>
+          <div>{{ form.title.errors }}</div>
         </div>
+        <button class="btn btn-lg btn-outline-dark shadow" type="submit">Delete</button>
+        <a class="btn btn-lg btn-outline-primary shadow" href="{% url 'articles:one_article' article_slug=slug %}">Back</a>
       </form>
-      <button class="btn btn-danger" style="margin-top: 12px">Delete</button>
     </section>
   </div>
 </main>
