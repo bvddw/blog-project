@@ -1,12 +1,11 @@
 from django.http import HttpRequest, HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render
-from main_app.models import Article, Comment, Topic
-from main_app.forms import CreateArticle, CreateComment, UpdateArticle, DeleteArticle
+from .models import Article, Comment
+from .forms import CreateArticle, CreateComment, UpdateArticle, DeleteArticle
 from django.urls import reverse
 
 
 def article(request: HttpRequest, article_slug) -> HttpResponse:
-    # display only article content, comments on page /article_title/comments
     try:
         user = request.user
         cur_article = Article.objects.get(slug=article_slug)

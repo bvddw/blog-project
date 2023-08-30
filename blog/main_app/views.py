@@ -1,10 +1,11 @@
-from django.http import HttpRequest, HttpResponse, Http404, HttpResponseRedirect
-from main_app.models import Article, Comment, Topic, UserTopic
-from main_app.forms import LoginUser, RegistrateUser, SetUserData, SetNewPassword, Reactivate
-from main_app.services import get_sorted_articles, get_sorted_topics
+from articles.models import Article
 from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.http import HttpRequest, HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from main_app.forms import LoginUser, RegistrateUser, SetUserData, SetNewPassword, Reactivate
+from main_app.services import get_sorted_articles, get_sorted_topics
+from topics.models import Topic
 
 UserModel = get_user_model()
 
@@ -76,14 +77,14 @@ def set_userdata(request: HttpRequest, username) -> HttpResponse:
 
 def deactivate(request: HttpRequest) -> HttpResponse:
     if not request.user.is_authenticated:
-        url = reverse('login_user')
+        url = reverse('user:login_user')
         return HttpResponseRedirect(url)
     user = request.user
     if request.method == "POST":
         logout(request)
         user.is_active = False
         user.save()
-        url = reverse('login_user')
+        url = reverse('user:login_user')
         return HttpResponseRedirect(url)
     return render(request, 'deactivate.html')
 

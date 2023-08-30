@@ -1,7 +1,10 @@
-from django.http import HttpRequest, HttpResponse, Http404
-from main_app.models import Article, Comment, Topic, UserTopic
 from django.contrib.auth import get_user_model
-from django.shortcuts import render
+from django.http import HttpRequest, HttpResponse, Http404, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from articles.models import Article
+from django.urls import reverse
+
+from .models import Topic, UserTopic
 
 UserModel = get_user_model()
 
@@ -27,6 +30,26 @@ def subscribe_topic(request: HttpRequest, topic_title) -> HttpResponse:
         raise Http404('No topics with such title.')
 
 
+def topic_prefer(request: HttpRequest, topic_title) -> HttpResponse:
+    try:
+        rel = UserTopic.objects.get(user=request.user, topic=get_object_or_404(Topic, title=topic_title))
+    except UserTopic.DoesNotExist:
+        UserTopic.objects.create(user=request.user, topic=get_object_or_404(Topic, title=topic_title), notify=False)
+    url = reverse('user:profile_page', kwargs={'username': request.user.username})
+    return HttpResponseRedirect(url)
+
+
+def topic_subscribed(request: HttpRequest, topic_title) -> HttpResponse:
+    try:
+        rel = UserTopic.objects.get(user=request.user, topic=get_object_or_404(Topic, title=topic_title))
+        rel.notify = True
+        rel.save()
+    except UserTopic.DoesNotExist:
+        UserTopic.objects.create(user=request.user, topic=get_object_or_404(Topic, title=topic_title), notify=True)
+    url = reverse('user:profile_page', kwargs={'username': request.user.username})
+    return HttpResponseRedirect(url)
+
+
 def unsubscribe_topic(request: HttpRequest, topic_title) -> HttpResponse:
     try:
         cur_topic = Topic.objects.get(title=topic_title)
@@ -34,3 +57,18 @@ def unsubscribe_topic(request: HttpRequest, topic_title) -> HttpResponse:
         return render(request, 'unsub_topic.html', ctx)
     except Topic.DoesNotExist:
         raise Http404('No topics with such title.')
+
+
+def topic_unprefer(request: HttpRequest, topic_title) -> HttpResponse:
+    rel = UserTopic.objects.get(user=request.user, topic=get_object_or_404(Topic, title=topic_title))
+    rel.delete()
+    url = reverse('user:profile_page', kwargs={'username': request.user.username})
+    return HttpResponseRedirect(url)
+
+
+def topic_unsubscribed(request: HttpRequest, topic_title) -> HttpResponse:
+    rel = UserTopic.objects.get(user=request.user, topic=get_object_or_404(Topic, title=topic_title))
+    rel.notify = False
+    rel.save()
+    url = reverse('user:profile_page', kwargs={'username': request.user.username})
+    return HttpResponseRedirect(url)

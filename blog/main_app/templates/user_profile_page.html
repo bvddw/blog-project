@@ -30,16 +30,25 @@
       <ul>
         {% for topic in ordered_topics %}
           <li>
-            <a style="color: black; text-decoration: none" href="{% url 'topics:one_topic' topic_title=topic.topic.title %}">{{ topic.topic.title }}</a>
+            <div>
+              <a style="color: black; font-size: 18px; text-decoration: none" href="{% url 'topics:one_topic' topic_title=topic.topic.title %}">{{ topic.topic.title }}</a>
+            </div>
             {% if topic.priority == 2 %}
-              <a style="margin-left: 36px; color: green">Preferred</a>
-              <a href="{% url 'topics:unsub_topic' topic_title=topic.topic.title %}" style="margin-left: 12px; color: green">Notified</a>
+            <div style="margin-top: 12px; margin-bottom: 12px">
+              <a class="btn btn-success" href="{% url 'topics:unprefer_topic' topic_title=topic.topic.title %}" style="margin-left: 36px">Preferred</a>
+              <a class="btn btn-success" href="{% url 'topics:unsub_topic' topic_title=topic.topic.title %}" style="margin-left: 12px">Notified</a>
+            </div>
             {% elif topic.priority == 1 %}
-              <a style="margin-left: 36px; color: green">Preferred</a>
-              <a href="{% url 'topics:sub_topic' topic_title=topic.topic.title %}" style="margin-left: 12px; color: red">Notify Me</a>
+            <div style="margin-top: 12px; margin-bottom: 12px">
+              <a class="btn btn-success" href="{% url 'topics:unprefer_topic' topic_title=topic.topic.title %}" style="margin-left: 36px">Preferred</a>
+              <a class="btn btn-danger" href="{% url 'topics:sub_topic' topic_title=topic.topic.title %}" style="margin-left: 12px">Notify Me</a>
+            </div>
             {% else %}
-              <a style="margin-left: 36px; color: red">Prefer</a>
-              <a href="{% url 'topics:sub_topic' topic_title=topic.topic.title %}" style="margin-left: 12px; color: red">Notify Me</a>
+            <div style="margin-top: 12px; margin-bottom: 12px">
+              <a class="btn btn-danger" href="{% url 'topics:prefer_topic' topic_title=topic.topic.title %}" style="margin-left: 36px">Prefer</a>
+              <a class="btn btn-danger" href="{% url 'topics:sub_topic' topic_title=topic.topic.title %}" style="margin-left: 12px">Notify Me</a>
+            </div>
+
             {% endif %}
           </li>
         {% endfor %}
@@ -47,7 +56,7 @@
 
     <a style="color: black; margin-right: 20px;" href="{% url 'user:set_data' username=user.username %}">Set data</a>
     <a style="color: black;" href="{% url 'user:set_password' username=user.username %}">Set password</a>
-    <p><a style="color: black", href="{% url 'user:deactivate' %}">Deactivate account</a></p>
+    <p><a style="color: black" href="{% url 'user:deactivate' %}">Deactivate account</a></p>
     {% endif %}
   </div>
 
