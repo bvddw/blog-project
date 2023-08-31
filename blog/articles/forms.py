@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from .models import Article, Comment
+from topics.models import Topic
 
 
 class CreateArticle(forms.ModelForm):
@@ -36,7 +37,7 @@ class CreateArticle(forms.ModelForm):
         }
 
 
-class UpdateArticle(ModelForm):
+class UpdateArticle(forms.ModelForm):
     class Meta:
         model = Article
         fields = ['title', 'content', 'topics']

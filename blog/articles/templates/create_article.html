@@ -13,21 +13,22 @@
         {% csrf_token %}
         <div class="h3 mb-3 fw-normal text-nowrap">Please, input data:</div>
 
-        <div class="form-floating" style="margin-bottom: 4px">
-          {{ form.title }}
-          <label for="title">{{ form.title.label }}</label>
-          <div>{{ form.title.errors }}</div>
-        </div>
+<!--        <div class="form-floating" style="margin-bottom: 4px">-->
+<!--          {{ form.title }}-->
+<!--          <label for="title">{{ form.title.label }}</label>-->
+<!--          <div>{{ form.title.errors }}</div>-->
+<!--        </div>-->
 
-        <div class="form-floating" style="margin-bottom: 4px">
-          {{ form.content }}
-          <label for="content">{{ form.content.label }}</label>
-        </div>
+<!--        <div class="form-floating" style="margin-bottom: 4px">-->
+<!--          {{ form.content }}-->
+<!--          <label for="content">{{ form.content.label }}</label>-->
+<!--        </div>-->
 
-        <div class="form-floating" style="margin-bottom: 4px">
-          {{ form.topics }}
-        </div>
-        <div>{{ form.errors }}</div>
+<!--        <div class="form-floating" style="margin-bottom: 4px">-->
+<!--          {{ form.topics }}-->
+<!--        </div>-->
+<!--        <div>{{ form.errors }}</div>-->
+        {{ form }}
         <button class="w-100 btn btn-lg btn-outline-dark shadow" type="submit">Create</button>
       </form>
     </section>

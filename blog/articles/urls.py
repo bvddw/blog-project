@@ -18,9 +18,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('create/', views.create_article, name='create_article'),
-    path('no-access/', views.no_access, name='no_access'),
-    path('<slug:article_slug>/', views.article, name='one_article'),
-    path('<slug:article_slug>/update/', views.update_article, name='upd_article'),
-    path('<slug:article_slug>/delete/', views.delete_article, name='del_article'),
+    path('create/', views.CreateArticleView.as_view(), name='create_article'),
+    path('no-access/', views.NoAccess.as_view(), name='no_access'),
+    path('<slug:article_slug>/', views.ArticleView.as_view(), name='one_article'),
+    path('<slug:article_slug>/update/', views.UpdateArticleView.as_view(), name='upd_article'),
+    path('<slug:article_slug>/delete/', views.DeleteArticleView.as_view(), name='del_article'),
 ]

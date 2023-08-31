@@ -1,57 +1,64 @@
 from articles.models import Article
-from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpRequest, HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from django.views import View
+from django.views.generic import DetailView
 from main_app.forms import LoginUser, RegistrateUser, SetUserData, SetNewPassword, Reactivate
 from main_app.services import get_sorted_articles, get_sorted_topics
-from topics.models import Topic
-
-UserModel = get_user_model()
+from .models import UserModel
 
 
-def profile(request: HttpRequest, username) -> HttpResponse:
-    try:
-        cur_user = UserModel.objects.get(username=username)
+class ProfileView(DetailView):
+    model = UserModel
+    template_name = 'user_profile_page.html'
+    context_object_name = 'user'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, username=self.kwargs['username'])
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        cur_user = self.get_object()
         articles = Article.objects.filter(author=cur_user)
         articles_on_preferred_topics = get_sorted_articles(cur_user.id)[:3]
         sorted_topics = get_sorted_topics(cur_user)
-
-        ctx = {
-            'user': cur_user,
-            'users_articles': articles,
-            'recommendation': articles_on_preferred_topics,
-            'topics': Topic.objects.all(),
-            'ordered_topics': sorted_topics,
-        }
-
-        return render(request, 'user_profile_page.html', ctx)
-    except UserModel.DoesNotExist:
-        raise Http404('There is no such user.')
+        context_data['users_articles'] = articles
+        context_data['recommendation'] = articles_on_preferred_topics
+        context_data['ordered_topics'] = sorted_topics
+        return context_data
 
 
-def set_password(request: HttpRequest, username) -> HttpResponse:
-    try:
-        user = UserModel.objects.get(username=username)
-    except UserModel.DoesNotExist:
-        raise Http404
-    if not request.user.is_authenticated:
-        url = reverse('login_user')
-        return HttpResponseRedirect(url)
-    if request.method == "POST":
+class SetNewPasswordView(View):
+    template_name = 'set_password.html'
+    model = UserModel
+    form_class = SetNewPassword
+
+    def get(self, request, username):
+        user = get_object_or_404(self.model, username=username)
+        if not request.user.is_authenticated:
+            url = reverse('login_user')
+            return HttpResponseRedirect(url)
+        form = self.form_class(initial={'username': username})
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, username):
         form = SetNewPassword(request.POST, initial={'username': username})
         if form.is_valid():
             form.update_data(username)
 
             url = reverse('user:password_changed')
             return HttpResponseRedirect(url)
-    else:
-        form = SetNewPassword(initial={'username': username})
-    return render(request, 'set_password.html', {"form": form})
+
+        return render(request, self.template_name, {'form': form})
 
 
-def password_changed(request: HttpRequest) -> HttpResponse:
-    return render(request, 'password_changed.html')
+class PasswordChanged(View):
+    template_name = 'password_changed.html'
+
+    def get(self, reqeust):
+        return render(reqeust, self.template_name)
 
 
 def set_userdata(request: HttpRequest, username) -> HttpResponse:
@@ -75,67 +82,115 @@ def set_userdata(request: HttpRequest, username) -> HttpResponse:
     return render(request, 'set_data.html', {"form": form})
 
 
-def deactivate(request: HttpRequest) -> HttpResponse:
-    if not request.user.is_authenticated:
-        url = reverse('user:login_user')
-        return HttpResponseRedirect(url)
-    user = request.user
-    if request.method == "POST":
+class SetUserDataView(View):
+    template_name = 'set_data.html'
+    model = UserModel
+    form_class = SetUserData
+
+    def get(self, request, username):
+        user = get_object_or_404(self.model, username=username)
+        if not request.user.is_authenticated:
+            url = reverse('login_user')
+            return HttpResponseRedirect(url)
+        details = {"first_name": user.first_name, "last_name": user.last_name, "email": user.email}
+        form = SetUserData(details)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, username):
+        form = SetUserData(request.POST)
+        if form.is_valid():
+            form.update_data(username)
+
+            url = reverse('user:profile_page', kwargs={'username': username})
+            return HttpResponseRedirect(url)
+
+        return render(request, self.template_name, {'form': form})
+
+
+class DeactivateAccountView(View):
+    template_name = 'deactivate.html'
+
+    def get(self, request):
+        if not request.user.is_authenticated:
+            url = reverse('user:login_user')
+            return HttpResponseRedirect(url)
+        return render(request, self.template_name)
+
+    def post(self, request):
+        user = request.user
         logout(request)
         user.is_active = False
         user.save()
         url = reverse('user:login_user')
         return HttpResponseRedirect(url)
-    return render(request, 'deactivate.html')
 
 
-def reactivate(request):
-    if request.method == "POST":
-        form = Reactivate(request.POST)
+class ReactivateAccountView(View):
+    template_name = 'reactivate.html'
+    form_class = Reactivate
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
         if form.is_valid():
             form.reactivate()
 
             url = reverse('user:success_reactivation')
             return HttpResponseRedirect(url)
-    else:
-        form = RegistrateUser()
-    return render(request, 'reactivate.html', {"form": form})
+        return render(request, self.template_name, {'form': form})
 
 
-def success_reactivation(request):
-    return render(request, 'success_reactivation.html')
+class SuccessReactivationView(View):
+    template_name = 'success_reactivation.html'
+
+    def get(self, reqeust):
+        return render(reqeust, self.template_name)
 
 
-def register_user(request: HttpRequest) -> HttpResponse:
-    if request.method == "POST":
-        form = RegistrateUser(request.POST)
-        if form.is_valid():
-            form.create_user()
+class LoginUserView(View):
+    template_name = 'login.html'
+    form_class = LoginUser
 
-            url = reverse('user:login_user')
-            return HttpResponseRedirect(url)
-    else:
-        form = RegistrateUser()
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
 
-    return render(request, 'register.html', {'form': form})
-
-
-def login_user(request):
-    if request.method == "POST":
-        form = LoginUser(request.POST)
+    def post(self, request):
+        form = self.form_class(request.POST)
         if form.is_valid():
             user = authenticate(**form.cleaned_data)
             login(request, user)
 
             url = reverse('user:profile_page', kwargs={'username': user.username})
             return HttpResponseRedirect(url)
-    else:
-        form = LoginUser()
 
-    return render(request, 'login.html', {'form': form})
+        return render(request, self.template_name, {'form': form})
 
 
-def logout_user(request: HttpRequest) -> HttpResponse:
-    logout(request)
-    url = reverse('main_page')
-    return HttpResponseRedirect(url)
+class RegisterUserView(View):
+    template_name = 'register.html'
+    form_class = RegistrateUser
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.create_user()
+
+            url = reverse('user:login_user')
+            return HttpResponseRedirect(url)
+
+        return render(request, self.template_name, {'form': form})
+
+
+class LogoutUserView(View):
+    def get(self, request):
+        logout(request)
+        url = reverse('main_page')
+        return HttpResponseRedirect(url)
