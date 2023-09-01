@@ -1,4 +1,4 @@
-from main_app.models import Topic
+from topics.models import Topic
 
 
 def custom_context(request):

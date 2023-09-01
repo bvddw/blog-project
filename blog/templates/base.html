@@ -55,38 +55,54 @@
     }
   </style>
 </head>
-<body style="position: relative">
+<body>
 <div class="header-block">
   <div class="header">
-    <a href="{% url 'main_page' %}" class="header-logo">DJANGO PROJECT</a>
+    <a href="{% url 'main_page' %}" class="header-logo">BlogPost</a>
   </div>
-  <div class="navbar" style="display: flex; justify-content: end">
-    {% if not request.user.username %}
-    <a class="register" style="margin-right: 6px" href="{% url 'user:register_user' %}">Register</a>
-    <a class="login" style="margin-right: 6px" href="{% url 'user:login_user' %}">Login</a>
-    <a class="reactivate-form" style="margin-right: 6px" href="{% url 'user:reactivate' %}">Reactivate</a>
-    {% else %}
-      <a class="user" style="margin-right: 6px" href="{% url 'user:profile_page' username=request.user.username %}">{{ request.user }}</a>
-      {% if request.user.is_staff %}
-        <a class="admin-page-link" style="margin-right: 6px" href="/admin">Admin page</a>
+  <div class="navbar" style="display: flex; justify-content: space-between; margin-left: 16px; margin-right: 16px">
+    <div style="display: flex">
+      <div class="dropdown">
+        <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Topics
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark">
+          {% for topic in topics %}
+            <li><a href="{% url 'topics:one_topic' topic_title=topic.title %}" class="dropdown-item active" style="background-color: rgb(52, 58, 64)">{{ topic.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      {% if not request.user.username %}
+        <a class="register" style="margin-right: 6px" href="{% url 'user:register_user' %}">Register</a>
+        <a class="login" style="margin-right: 6px" href="{% url 'user:login_user' %}">Login</a>
+        <a class="reactivate-form" style="margin-right: 6px" href="{% url 'user:reactivate' %}">Reactivate</a>
+      {% else %}
+        <a class="user" style="margin-right: 6px" href="{% url 'user:profile_page' username=request.user.username %}">{{ request.user }}</a>
+        {% if request.user.is_staff %}
+          <a class="admin-page-link" style="margin-right: 6px" href="/admin">Admin page</a>
+        {% endif %}
+        <a class="logout" style="margin-right: 6px" href="{% url 'user:logout_user' %}">Logout</a>
+        <a class="create-article" style="margin-right: 6px" href="{% url 'articles:create_article' %}">Create article</a>
       {% endif %}
-      <a class="logout" style="margin-right: 6px" href="{% url 'user:logout_user' %}">Logout</a>
-      <a class="create-article" style="margin-right: 6px" href="{% url 'articles:create_article' %}">Create article</a>
-    {% endif %}
-    <a class="about-page" style="margin-right: 6px" href="{% url 'about_page' %}">About us</a>
-  </div>
-  <div class="nav-scroller py-1">
-    <nav class="nav d-flex justify-content-between">
-      {% for topic in topics %}
-        <a href="{% url 'topics:one_topic' topic_title=topic.title %}" class="nav-item nav-link link-body-emphasis">{{ topic.title }}</a>
-      {% endfor %}
-    </nav>
-  </div>
+      <a class="about-page" style="margin-right: 6px" href="{% url 'about_page' %}">About us</a>
+    </div>
+    </div>
+
+<!--  <div class="nav-scroller py-1">-->
+<!--    <nav class="nav d-flex justify-content-between">-->
+<!--      {% for topic in topics %}-->
+<!--        <a href="{% url 'topics:one_topic' topic_title=topic.title %}" class="nav-item nav-link link-body-emphasis">{{ topic.title }}</a>-->
+<!--      {% endfor %}-->
+<!--    </nav>-->
+<!--  </div>-->
 </div>
   {% block content %}
   {% endblock %}
   {% if page_obj.has_other_pages %}
-    <nav aria-label="Page navigation example">
+    <nav style="padding-left: 20px" aria-label="Page navigation example">
       <ul class="pagination">
         <li class="page-item">
           <a class="page-link" href="?page=1" aria-label="Previous">

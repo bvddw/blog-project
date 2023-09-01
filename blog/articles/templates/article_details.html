@@ -20,8 +20,8 @@
     <p style="text-align: end; color: rgba(0, 0, 0, 0.48)">Last update at: {{ article.updated_at }}</p>
 
     <div style="text-align: end">
-      <a style="margin-left: 6px; color: black; text-decoration: none" href="{% url 'articles:upd_article' article_slug=article.slug %}">Update</a>
-      <a style="margin-left: 6px; color: black; text-decoration: none" href="{% url 'articles:del_article' article_slug=article.slug %}">Delete</a>
+      <a class="btn btn-outline-dark" href="{% url 'articles:upd_article' article_slug=article.slug %}">Update</a>
+      <a class="btn btn-outline-dark" href="{% url 'articles:del_article' article_slug=article.slug %}">Delete</a>
     </div>
 
 
@@ -44,7 +44,7 @@
           <div>{{ form.title.errors }}</div>
         </div>
         <div>{{ form.title.errors }}</div>
-        <button class="w-100 btn btn-lg btn-outline-dark shadow" type="submit">Create</button>
+        <button class="w-100 btn btn-lg btn-outline-dark shadow" type="submit">Leave comment</button>
       </form>
     {% endif %}
   </div>

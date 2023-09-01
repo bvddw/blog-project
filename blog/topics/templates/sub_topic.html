@@ -11,7 +11,7 @@
       <div class="h4 fst-italic">Subscribe form</div>
         <h2>{{ topic.title }}</h2>
         <p>{{ topic.description }}</p>
-      <button class="btn btn-success" style="margin-top: 12px">Subscribe</button>
+      <a href="{% url 'topics:subd_topic' topic_title=topic.title %}" class="btn btn-outline-success" style="margin-top: 12px">Subscribe</a>
     </section>
   </div>
 </main>

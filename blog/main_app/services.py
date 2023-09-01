@@ -1,4 +1,5 @@
-from main_app.models import Article, UserTopic, Topic
+from articles.models import Article
+from topics.models import UserTopic, Topic
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Q
 

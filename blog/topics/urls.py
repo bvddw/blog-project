@@ -14,12 +14,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, re_path, include
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('<topic_title>/', views.one_topic, name='one_topic'),
-    path('<topic_title>/subscribe/', views.subscribe_topic, name='sub_topic'),
-    path('<topic_title>/unsubscribe/', views.unsubscribe_topic, name='unsub_topic'),
+    path('<topic_title>/', views.TopicDetailView.as_view(), name='one_topic'),
+    path('<topic_title>/subscribe/', views.SubscribeTopicConfirmationView.as_view(), name='sub_topic'),
+    path('<topic_title>/prefer/', views.TopicPreferView.as_view(), name='prefer_topic'),
+    path('<topic_title>/subscribed/', views.TopicSubscribeView.as_view(), name='subd_topic'),
+    path('<topic_title>/unsubscribe/', views.UnsubscribeTopicConfirmationView.as_view(), name='unsub_topic'),
+    path('<topic_title>/unprefer/', views.TopicUnpreferView.as_view(), name='unprefer_topic'),
+    path('<topic_title>/unsubscribed/', views.TopicUnsubscribeView.as_view(), name='unsubd_topic'),
 ]

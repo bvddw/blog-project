@@ -1,5 +1,5 @@
 from django import template
-from ..models import Article
+from articles.models import Article
 
 register = template.Library()
 

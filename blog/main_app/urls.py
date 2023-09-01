@@ -18,14 +18,14 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('profile/<username>/', views.profile, name='profile_page'),
-    path('set-password/<username>/', views.set_password, name='set_password'),
-    path('password_changed/', views.password_changed, name='password_changed'),
-    path('set-userdata/<username>/', views.set_userdata, name='set_data'),
-    path('deactivate/', views.deactivate, name='deactivate'),
-    path('reactivate/', views.reactivate, name='reactivate'),
-    path('success_reactivation/', views.success_reactivation, name='success_reactivation'),
-    path('register_user/', views.register_user, name='register_user'),
-    path('login_user/', views.login_user, name='login_user'),
-    path('logout_user/', views.logout_user, name='logout_user'),
+    path('profile/<username>/', views.ProfileView.as_view(), name='profile_page'),
+    path('set-password/<username>/', views.SetNewPasswordView.as_view(), name='set_password'),
+    path('password_changed/', views.PasswordChanged.as_view(), name='password_changed'),
+    path('set-userdata/<username>/', views.SetUserDataView.as_view(), name='set_data'),
+    path('deactivate/', views.DeactivateAccountView.as_view(), name='deactivate'),
+    path('reactivate/', views.ReactivateAccountView.as_view(), name='reactivate'),
+    path('success_reactivation/', views.SuccessReactivationView.as_view(), name='success_reactivation'),
+    path('login_user/', views.LoginUserView.as_view(), name='login_user'),
+    path('register_user/', views.RegisterUserView.as_view(), name='register_user'),
+    path('logout_user/', views.LogoutUserView.as_view(), name='logout_user'),
 ]
